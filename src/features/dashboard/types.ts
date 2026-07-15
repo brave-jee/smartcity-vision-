@@ -30,5 +30,6 @@ export type DashboardOverview = {
   metrics: DashboardMetric[]
   trafficTrend: TrendPoint[]
   energyTrend: TrendPoint[]
-  updatedAt: string
+  /** 更新时间戳（毫秒），由 UI 按当前语言格式化 */
+  updatedAt: number
 }

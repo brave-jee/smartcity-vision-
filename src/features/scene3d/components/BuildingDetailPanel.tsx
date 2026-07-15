@@ -1,10 +1,12 @@
 import type { BuildingDetail, BuildingStatus } from '@/features/scene3d/types/buildingDetail'
 import { useSceneStore } from '@/features/scene3d/stores/useSceneStore'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import type { AppCopy } from '@/features/settings/i18n/appCopy'
 
-function statusLabel(status: BuildingStatus) {
-  if (status === 'critical') return '危急'
-  if (status === 'warning') return '预警'
-  return '正常'
+function statusLabel(copy: AppCopy, status: BuildingStatus) {
+  if (status === 'critical') return copy.building.statusCritical
+  if (status === 'warning') return copy.building.statusWarning
+  return copy.building.statusNormal
 }
 
 function statusClass(status: BuildingStatus) {
@@ -15,29 +17,30 @@ function statusClass(status: BuildingStatus) {
 
 type DetailBodyProps = {
   detail: BuildingDetail
+  copy: AppCopy
 }
 
-function DetailBody({ detail }: DetailBodyProps) {
+function DetailBody({ detail, copy }: DetailBodyProps) {
   return (
     <>
       <div className="mt-3 flex items-center justify-between gap-2">
         <h2 className="font-display text-base tracking-wide text-city-snow">{detail.name}</h2>
         <span className={`text-xs ${statusClass(detail.status)}`}>
-          {statusLabel(detail.status)}
+          {statusLabel(copy, detail.status)}
         </span>
       </div>
       <p className="mt-1 text-xs text-city-fog">
-        {detail.district} · {detail.floors} 层
+        {detail.district} · {copy.building.floors(detail.floors)}
       </p>
       <p className="mt-3 text-sm leading-relaxed text-city-fog">{detail.summary}</p>
 
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <div>
-          <dt className="text-xs text-city-fog">实时能耗</dt>
+          <dt className="text-xs text-city-fog">{copy.building.energy}</dt>
           <dd className="mt-1 font-display text-city-snow">{detail.energyMw} MW</dd>
         </div>
         <div>
-          <dt className="text-xs text-city-fog">入住率</dt>
+          <dt className="text-xs text-city-fog">{copy.building.occupancy}</dt>
           <dd className="mt-1 font-display text-city-snow">{detail.occupancy}%</dd>
         </div>
       </dl>
@@ -51,6 +54,7 @@ function DetailBody({ detail }: DetailBodyProps) {
 export function BuildingDetailPanel() {
   const selectedBuilding = useSceneStore((s) => s.selectedBuilding)
   const clearSelection = useSceneStore((s) => s.clearSelection)
+  const { copy } = useAppCopy()
 
   if (!selectedBuilding) return null
 
@@ -65,10 +69,10 @@ export function BuildingDetailPanel() {
           onClick={clearSelection}
           className="text-xs text-city-fog transition hover:text-city-mint"
         >
-          关闭
+          {copy.building.close}
         </button>
       </div>
-      <DetailBody detail={selectedBuilding} />
+      <DetailBody detail={selectedBuilding} copy={copy} />
     </aside>
   )
 }

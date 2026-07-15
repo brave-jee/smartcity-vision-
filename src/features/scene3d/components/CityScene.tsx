@@ -6,15 +6,21 @@ import { GltfRoads } from '@/features/scene3d/components/GltfRoads'
 import { Ground } from '@/features/scene3d/components/Ground'
 import { SceneLights } from '@/features/scene3d/components/SceneLights'
 import { StreetLights } from '@/features/scene3d/components/StreetLights'
+import { useQualityProfile } from '@/features/settings/hooks/useQualityProfile'
+import { useSettingsStore } from '@/features/settings/stores/useSettingsStore'
 import { PatrolFleet } from '@/features/vehicles/components/PatrolFleet'
 import { RainParticles } from '@/features/weather/components/RainParticles'
 import { useAtmosphere } from '@/features/weather/hooks/useAtmosphere'
 
 /**
  * 城市场景：建筑交互 + 天气昼夜 + 车辆巡航 + 飞线粒子。
+ * 图层与画质细节由系统设置控制。
  */
 export function CityScene() {
   const atmosphere = useAtmosphere()
+  const profile = useQualityProfile()
+  const fxEnabled = useSettingsStore((s) => s.fxEnabled)
+  const vehiclesEnabled = useSettingsStore((s) => s.vehiclesEnabled)
 
   return (
     <>
@@ -30,7 +36,7 @@ export function CityScene() {
         <Stars
           radius={90}
           depth={42}
-          count={1400}
+          count={profile.starCount}
           factor={atmosphere.starsFactor}
           saturation={0}
           fade
@@ -43,18 +49,20 @@ export function CityScene() {
       <GltfRoads />
       <GltfCityBuildings />
       <StreetLights />
-      <PatrolFleet />
-      <FlylineEffects />
+      {vehiclesEnabled ? <PatrolFleet /> : null}
+      {fxEnabled ? <FlylineEffects /> : null}
       <RainParticles />
 
-      <ContactShadows
-        position={[0, 0.02, 0]}
-        opacity={atmosphere.contactShadowOpacity}
-        scale={70}
-        blur={2.4}
-        far={20}
-        color="#02060c"
-      />
+      {profile.contactShadows ? (
+        <ContactShadows
+          position={[0, 0.02, 0]}
+          opacity={atmosphere.contactShadowOpacity}
+          scale={70}
+          blur={2.4}
+          far={20}
+          color="#02060c"
+        />
+      ) : null}
 
       <OrbitControls
         makeDefault

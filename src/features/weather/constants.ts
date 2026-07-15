@@ -6,9 +6,9 @@ export const DEFAULT_HOUR = 19.5
 /** 自动流逝速度：现实 1 秒 ≈ 仿真多少小时 */
 export const AUTO_HOUR_PER_SEC = 0.55
 
-export const WEATHER_OPTIONS: Array<{ id: WeatherKind; label: string }> = [
-  { id: 'clear', label: '晴朗' },
-  { id: 'cloudy', label: '多云' },
-  { id: 'rain', label: '降雨' },
-  { id: 'fog', label: '雾霾' },
+export const WEATHER_OPTIONS: Array<{ id: WeatherKind }> = [
+  { id: 'clear' },
+  { id: 'cloudy' },
+  { id: 'rain' },
+  { id: 'fog' },
 ]

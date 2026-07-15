@@ -5,8 +5,9 @@ import { AuthRedirect, ProtectedLayout } from '@/features/auth/layouts/Protected
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 import { OpLogsPage } from '@/features/logs/pages/OpLogsPage'
+import { SettingsPage } from '@/features/settings/pages/SettingsPage'
 
-/** 应用路由表：公开登录页 + 鉴权后大屏 / 日志 */
+/** 应用路由表：公开登录页 + 鉴权后大屏 / 日志 / 设置 */
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
           {
             path: 'logs',
             element: <OpLogsPage />,
+          },
+          {
+            path: 'settings',
+            element: <SettingsPage />,
           },
         ],
       },

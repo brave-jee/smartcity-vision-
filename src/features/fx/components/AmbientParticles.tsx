@@ -1,18 +1,20 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import { BufferAttribute, BufferGeometry, Points, PointsMaterial } from 'three'
-import { AMBIENT_PARTICLE_COUNT } from '@/features/fx/constants'
+import { useQualityProfile } from '@/features/settings/hooks/useQualityProfile'
 
 /**
  * 城市上空漂浮微粒，增强数字孪生氛围。
+ * 数量随画质档变化。
  */
 export function AmbientParticles() {
   const pointsRef = useRef<Points>(null)
+  const { particleCount } = useQualityProfile()
 
-  const { geometry, material } = useMemo(() => {
-    const positions = new Float32Array(AMBIENT_PARTICLE_COUNT * 3)
-    const speeds = new Float32Array(AMBIENT_PARTICLE_COUNT)
-    for (let i = 0; i < AMBIENT_PARTICLE_COUNT; i += 1) {
+  const { geometry, material, count } = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3)
+    const speeds = new Float32Array(particleCount)
+    for (let i = 0; i < particleCount; i += 1) {
       positions[i * 3] = (Math.random() - 0.5) * 48
       positions[i * 3 + 1] = 1 + Math.random() * 16
       positions[i * 3 + 2] = (Math.random() - 0.5) * 48
@@ -29,8 +31,8 @@ export function AmbientParticles() {
       depthWrite: false,
       sizeAttenuation: true,
     })
-    return { geometry: geo, material: mat }
-  }, [])
+    return { geometry: geo, material: mat, count: particleCount }
+  }, [particleCount])
 
   useEffect(() => {
     return () => {
@@ -48,7 +50,7 @@ export function AmbientParticles() {
     const speeds = speedAttr.array as Float32Array
     const step = Math.min(delta, 0.05)
 
-    for (let i = 0; i < AMBIENT_PARTICLE_COUNT; i += 1) {
+    for (let i = 0; i < count; i += 1) {
       const yi = i * 3 + 1
       array[yi]! += step * speeds[i]!
       if (array[yi]! > 18) {

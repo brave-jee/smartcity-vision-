@@ -9,6 +9,8 @@ import { MetricList } from '@/features/dashboard/components/MetricList'
 import { SceneViewport } from '@/features/dashboard/components/SceneViewport'
 import { useDashboardOverview } from '@/features/dashboard/hooks/useDashboardOverview'
 import { appendOpLog } from '@/features/logs/utils/appendOpLog'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import { getMetricLabel } from '@/features/settings/i18n/appCopy'
 
 /**
  * 首页数据大屏：
@@ -20,33 +22,45 @@ export function DashboardPage() {
   const { reconnect } = useAlertStream()
   const pendingAlerts = useAlertStore((s) => s.alerts.filter((item) => !item.acknowledged).length)
   const actor = useAuthStore((s) => s.user?.displayName ?? s.user?.username ?? '城市指挥员')
+  const { copy, locale } = useAppCopy()
 
   const metrics = useMemo(() => {
     if (!data) return null
     return data.metrics.map((metric) => {
-      if (metric.id !== 'alarms') return metric
+      const label = getMetricLabel(copy, metric.id)
+      if (metric.id !== 'alarms') {
+        return { ...metric, label }
+      }
       return {
         ...metric,
+        label,
         numericValue: pendingAlerts,
-        delta: pendingAlerts > 0 ? `待处置 ${pendingAlerts}` : '全部清空',
+        delta:
+          pendingAlerts > 0
+            ? copy.dashboard.alarmPending(pendingAlerts)
+            : copy.dashboard.alarmClear,
         trend: pendingAlerts > 0 ? ('up' as const) : ('flat' as const),
       }
     })
-  }, [data, pendingAlerts])
+  }, [data, pendingAlerts, copy])
+
+  const updatedAtLabel = data
+    ? new Date(data.updatedAt).toLocaleTimeString(locale, { hour12: false })
+    : ''
 
   return (
     <main className="flex h-full min-h-0 flex-col overflow-y-auto px-3 py-3 sm:px-4 sm:py-4 lg:px-5">
       <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-base tracking-wide text-city-snow sm:text-lg">
-            城市态势总览
+            {copy.dashboard.title}
           </h1>
           <p className="mt-0.5 text-xs text-city-fog">
             {loading && !data
-              ? '正在加载指标…'
+              ? copy.dashboard.loadingMetrics
               : data
-                ? `指标模拟中 · 更新于 ${data.updatedAt}`
-                : '等待数据'}
+                ? copy.dashboard.simulating(updatedAtLabel)
+                : copy.dashboard.waitingData}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -64,7 +78,7 @@ export function DashboardPage() {
             }}
             className="border border-city-fog/30 px-3 py-1.5 text-xs text-city-fog transition hover:border-city-mint hover:text-city-mint active:border-city-mint active:text-city-mint"
           >
-            刷新指标
+            {copy.dashboard.refresh}
           </button>
         </div>
       </div>
@@ -85,7 +99,7 @@ export function DashboardPage() {
             {metrics ? (
               <MetricList metrics={metrics} />
             ) : (
-              <p className="text-sm text-city-fog">指标加载中…</p>
+              <p className="text-sm text-city-fog">{copy.dashboard.metricsLoading}</p>
             )}
           </div>
         </aside>
@@ -100,7 +114,7 @@ export function DashboardPage() {
           <p className="mb-1 shrink-0 font-display text-[10px] tracking-[0.22em] text-city-mint uppercase">
             Live Alerts
           </p>
-          <p className="mb-3 shrink-0 text-[10px] text-city-fog">点「AI 分析」查看模拟研判</p>
+          <p className="mb-3 shrink-0 text-[10px] text-city-fog">{copy.dashboard.alertsHint}</p>
           <div className="min-h-0 flex-1">
             <LiveAlertList />
           </div>
@@ -113,7 +127,7 @@ export function DashboardPage() {
           <ChartsAnalyticsPanel trafficTrend={data.trafficTrend} energyTrend={data.energyTrend} />
         ) : (
           <section className="flex h-full items-center border border-city-fog/15 bg-city-panel/20 px-3 text-xs text-city-fog">
-            统计图表加载中…
+            {copy.dashboard.chartsLoading}
           </section>
         )}
       </div>

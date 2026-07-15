@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useAiAnalysis } from '@/features/ai-events/hooks/useAiAnalysis'
 import { useAlertStore } from '@/features/alerts/stores/useAlertStore'
-import {
-  alertLevelDotClass,
-  alertLevelLabel,
-  formatAlertRelativeTime,
-} from '@/features/alerts/utils/formatAlert'
+import { alertLevelDotClass } from '@/features/alerts/utils/formatAlert'
 import { useAuthStore } from '@/features/auth/stores/useAuthStore'
 import { appendOpLog } from '@/features/logs/utils/appendOpLog'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import {
+  formatAlertRelativeTimeLocalized,
+  getAlertLevelLabel,
+} from '@/features/settings/i18n/appCopy'
 
 /**
  * 实时告警列表：由 Mock WebSocket 推送驱动。
@@ -19,8 +20,8 @@ export function LiveAlertList() {
   const { analyzeAlert, alert: activeAlert, status: aiStatus } = useAiAnalysis()
   const activeAlertId = activeAlert?.id ?? null
   const [now, setNow] = useState(() => Date.now())
+  const { copy, locale } = useAppCopy()
 
-  // 让「刚刚 / N 秒前」随时间刷新
   useEffect(() => {
     const timer = window.setInterval(() => {
       setNow(Date.now())
@@ -31,7 +32,7 @@ export function LiveAlertList() {
   }, [])
 
   if (alerts.length === 0) {
-    return <p className="text-sm text-city-fog">等待告警推送…</p>
+    return <p className="text-sm text-city-fog">{copy.alerts.waiting}</p>
   }
 
   return (
@@ -57,7 +58,7 @@ export function LiveAlertList() {
               <div className="flex items-start justify-between gap-2">
                 <p className="truncate text-sm text-city-snow">{alert.title}</p>
                 <span className="shrink-0 text-[10px] tracking-wide text-city-fog">
-                  {alertLevelLabel(alert.level)}
+                  {getAlertLevelLabel(copy, alert.level)}
                 </span>
               </div>
               <p className="mt-1 truncate text-xs text-city-fog">
@@ -65,7 +66,7 @@ export function LiveAlertList() {
               </p>
               <div className="mt-1.5 flex items-center justify-between gap-2">
                 <p className="text-xs text-city-fog/80">
-                  {formatAlertRelativeTime(alert.createdAt, now)}
+                  {formatAlertRelativeTimeLocalized(copy, locale, alert.createdAt, now)}
                 </p>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
@@ -81,11 +82,11 @@ export function LiveAlertList() {
                   >
                     {activeAlertId === alert.id &&
                     (aiStatus === 'loading' || aiStatus === 'streaming')
-                      ? '分析中…'
-                      : 'AI 分析'}
+                      ? copy.alerts.analyzing
+                      : copy.alerts.analyze}
                   </button>
                   {alert.acknowledged ? (
-                    <span className="text-[10px] text-city-fog">已确认</span>
+                    <span className="text-[10px] text-city-fog">{copy.alerts.confirmed}</span>
                   ) : (
                     <button
                       type="button"
@@ -102,7 +103,7 @@ export function LiveAlertList() {
                       }}
                       className="text-[10px] text-city-mint transition hover:text-city-snow"
                     >
-                      确认
+                      {copy.alerts.confirm}
                     </button>
                   )}
                 </div>

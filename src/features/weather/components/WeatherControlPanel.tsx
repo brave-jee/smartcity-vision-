@@ -1,7 +1,10 @@
 import { WEATHER_OPTIONS } from '@/features/weather/constants'
 import { useWeatherClock } from '@/features/weather/hooks/useWeatherClock'
 import { useWeatherStore } from '@/features/weather/stores/useWeatherStore'
-import { formatSimClock, getDayPhase, getDayPhaseLabel } from '@/features/weather/utils/atmosphere'
+import { formatSimClock, getDayPhase } from '@/features/weather/utils/atmosphere'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import { getDayPhaseCopy, getWeatherLabel } from '@/features/settings/i18n/appCopy'
+import { useSettingsStore } from '@/features/settings/stores/useSettingsStore'
 
 /**
  * 视口内天气 / 昼夜控制：紧凑面板，避免被 overflow 裁切。
@@ -14,9 +17,11 @@ export function WeatherControlPanel() {
   const autoPlay = useWeatherStore((s) => s.autoPlay)
   const setHour = useWeatherStore((s) => s.setHour)
   const setWeather = useWeatherStore((s) => s.setWeather)
-  const toggleAutoPlay = useWeatherStore((s) => s.toggleAutoPlay)
+  const setAutoPlay = useWeatherStore((s) => s.setAutoPlay)
+  const setAutoDayNight = useSettingsStore((s) => s.setAutoDayNight)
+  const { copy } = useAppCopy()
 
-  const phaseLabel = getDayPhaseLabel(getDayPhase(hour))
+  const phaseLabel = getDayPhaseCopy(copy, getDayPhase(hour))
 
   return (
     <div className="pointer-events-auto absolute bottom-3 left-3 z-20 w-[min(calc(100%-1.5rem),16.5rem)] border border-city-fog/25 bg-city-ink/90 p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md">
@@ -30,7 +35,7 @@ export function WeatherControlPanel() {
       </div>
 
       <label className="mt-2 block">
-        <span className="mb-1 block text-[10px] text-city-fog/80">仿真时刻</span>
+        <span className="mb-1 block text-[10px] text-city-fog/80">{copy.weather.simTime}</span>
         <input
           type="range"
           min={0}
@@ -60,7 +65,7 @@ export function WeatherControlPanel() {
                   : 'border border-city-fog/25 text-city-fog hover:border-city-fog/50 hover:text-city-snow'
               }`}
             >
-              {option.label}
+              {getWeatherLabel(copy, option.id)}
             </button>
           )
         })}
@@ -68,14 +73,18 @@ export function WeatherControlPanel() {
 
       <button
         type="button"
-        onClick={toggleAutoPlay}
+        onClick={() => {
+          const next = !autoPlay
+          setAutoPlay(next)
+          setAutoDayNight(next)
+        }}
         className={`mt-2 w-full border px-2 py-1.5 text-[10px] transition ${
           autoPlay
             ? 'border-city-mint/50 bg-city-mint/10 text-city-mint'
             : 'border-city-fog/30 text-city-fog hover:border-city-mint/40 hover:text-city-mint'
         }`}
       >
-        {autoPlay ? '自动流逝中 · 点击暂停' : '开启自动昼夜流逝'}
+        {autoPlay ? copy.weather.autoOn : copy.weather.autoOff}
       </button>
     </div>
   )

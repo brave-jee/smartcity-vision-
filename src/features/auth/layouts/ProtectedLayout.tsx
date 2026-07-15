@@ -1,7 +1,12 @@
+import { useEffect } from 'react'
 import { NavLink, Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
 import { useAuthStore } from '@/features/auth/stores/useAuthStore'
 import { appendOpLog } from '@/features/logs/utils/appendOpLog'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import { useDocumentLocale } from '@/features/settings/hooks/useDocumentLocale'
+import { useSettingsStore } from '@/features/settings/stores/useSettingsStore'
+import { useWeatherStore } from '@/features/weather/stores/useWeatherStore'
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   `px-2 py-1 text-xs transition sm:text-sm ${
@@ -15,6 +20,15 @@ const navClass = ({ isActive }: { isActive: boolean }) =>
 export function ProtectedLayout() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
+  const autoDayNight = useSettingsStore((s) => s.autoDayNight)
+  const setWeatherAutoPlay = useWeatherStore((s) => s.setAutoPlay)
+  const { copy } = useAppCopy()
+  useDocumentLocale()
+
+  // 启动时用设置里的昼夜自动流逝同步天气时钟
+  useEffect(() => {
+    setWeatherAutoPlay(autoDayNight)
+  }, [autoDayNight, setWeatherAutoPlay])
 
   function handleLogout() {
     appendOpLog({
@@ -35,16 +49,22 @@ export function ProtectedLayout() {
               SmartCity Vision
             </p>
             <p className="mt-1 truncate text-xs text-city-fog">
-              已登录 · {user?.displayName ?? user?.username}
+              {copy.shell.loggedIn} · {user?.displayName ?? user?.username}
             </p>
           </div>
 
-          <nav className="flex shrink-0 items-center gap-1 sm:gap-3" aria-label="主导航">
+          <nav
+            className="flex shrink-0 flex-wrap items-center justify-end gap-1 sm:gap-3"
+            aria-label={copy.shell.navAria}
+          >
             <NavLink to="/app" end className={navClass}>
-              态势总览
+              {copy.shell.navOverview}
             </NavLink>
             <NavLink to="/app/logs" className={navClass}>
-              操作日志
+              {copy.shell.navLogs}
+            </NavLink>
+            <NavLink to="/app/settings" className={navClass}>
+              {copy.shell.navSettings}
             </NavLink>
           </nav>
 
@@ -53,7 +73,7 @@ export function ProtectedLayout() {
             onClick={handleLogout}
             className="shrink-0 border border-city-fog/30 px-3 py-2 text-sm text-city-fog transition hover:border-city-mint hover:text-city-mint active:border-city-mint active:text-city-mint sm:px-4"
           >
-            退出登录
+            {copy.shell.logout}
           </button>
         </header>
         {/* min-h-0 确保子级大屏网格可以内部滚动，而不是撑破视口 */}

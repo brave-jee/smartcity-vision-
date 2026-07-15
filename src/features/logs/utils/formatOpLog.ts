@@ -1,4 +1,5 @@
 import type { OpLogCategory } from '@/features/logs/types'
+import type { AppLocale } from '@/features/settings/types'
 
 /** 分类色点 */
 export function opLogCategoryDotClass(category: OpLogCategory) {
@@ -10,8 +11,8 @@ export function opLogCategoryDotClass(category: OpLogCategory) {
 }
 
 /** 绝对时间 */
-export function formatOpLogTime(ts: number) {
-  return new Date(ts).toLocaleString('zh-CN', {
+export function formatOpLogTime(ts: number, locale: AppLocale = 'zh-CN') {
+  return new Date(ts).toLocaleString(locale, {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',

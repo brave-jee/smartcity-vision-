@@ -1,5 +1,7 @@
-import { OP_LOG_CATEGORY_LABEL, OP_LOG_CATEGORY_OPTIONS } from '@/features/logs/constants'
+import { OP_LOG_CATEGORY_OPTIONS } from '@/features/logs/constants'
 import type { OpLogCategory } from '@/features/logs/types'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import { getOpLogCategoryLabel } from '@/features/settings/i18n/appCopy'
 
 type OpLogFiltersProps = {
   category: OpLogCategory | 'all'
@@ -17,6 +19,8 @@ export function OpLogFilters({
   onCategoryChange,
   onKeywordChange,
 }: OpLogFiltersProps) {
+  const { copy } = useAppCopy()
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap gap-2">
@@ -33,18 +37,18 @@ export function OpLogFilters({
                 active ? 'bg-city-teal/25 text-city-mint' : 'text-city-fog hover:text-city-mint'
               }`}
             >
-              {OP_LOG_CATEGORY_LABEL[option]}
+              {getOpLogCategoryLabel(copy, option)}
             </button>
           )
         })}
       </div>
 
       <label className="block w-full sm:max-w-xs">
-        <span className="sr-only">搜索日志</span>
+        <span className="sr-only">{copy.logs.searchAria}</span>
         <input
           type="search"
           value={keyword}
-          placeholder="搜索操作人 / 标题 / 对象"
+          placeholder={copy.logs.searchPlaceholder}
           onChange={(event) => {
             onKeywordChange(event.target.value)
           }}

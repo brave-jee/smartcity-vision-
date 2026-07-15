@@ -1,7 +1,9 @@
 import { useAiAnalysis } from '@/features/ai-events/hooks/useAiAnalysis'
-import { alertLevelDotClass, alertLevelLabel } from '@/features/alerts/utils/formatAlert'
+import { alertLevelDotClass } from '@/features/alerts/utils/formatAlert'
+import { useAppCopy } from '@/features/settings/hooks/useAppCopy'
+import { getAlertLevelLabel } from '@/features/settings/i18n/appCopy'
 
-function confidenceLabel(value: number) {
+function confidencePct(value: number) {
   return `${Math.round(value * 100)}%`
 }
 
@@ -10,6 +12,7 @@ function confidenceLabel(value: number) {
  */
 export function AiAnalysisPanel() {
   const { status, alert, result, stream, error, analyzeAlert, closePanel } = useAiAnalysis()
+  const { copy } = useAppCopy()
 
   if (status === 'idle' || !alert) return null
 
@@ -24,14 +27,14 @@ export function AiAnalysisPanel() {
           <p className="font-display text-[10px] tracking-[0.2em] text-city-mint uppercase">
             AI Event Analysis
           </p>
-          <p className="mt-1 text-[10px] text-city-fog">模拟推理 · 非真实模型</p>
+          <p className="mt-1 text-[10px] text-city-fog">{copy.ai.simulated}</p>
         </div>
         <button
           type="button"
           onClick={closePanel}
           className="text-xs text-city-fog transition hover:text-city-mint"
         >
-          关闭
+          {copy.ai.close}
         </button>
       </div>
 
@@ -43,7 +46,7 @@ export function AiAnalysisPanel() {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm text-city-snow">{alert.title}</p>
           <p className="mt-1 truncate text-xs text-city-fog">
-            {alert.district} · {alertLevelLabel(alert.level)}
+            {alert.district} · {getAlertLevelLabel(copy, alert.level)}
           </p>
         </div>
       </div>
@@ -55,14 +58,14 @@ export function AiAnalysisPanel() {
               className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-city-fog/30 border-t-city-mint"
               aria-hidden
             />
-            正在汇聚多源信号…
+            {copy.ai.gathering}
           </div>
         ) : null}
 
         {status === 'error' ? (
           <div className="space-y-3">
             <p className="text-sm text-city-crimson" role="alert">
-              {error ?? '分析失败'}
+              {error ?? copy.ai.failed}
             </p>
             <button
               type="button"
@@ -71,7 +74,7 @@ export function AiAnalysisPanel() {
               }}
               className="border border-city-fog/30 px-3 py-1.5 text-xs text-city-fog transition hover:border-city-mint hover:text-city-mint"
             >
-              重试
+              {copy.ai.retry}
             </button>
           </div>
         ) : null}
@@ -80,7 +83,7 @@ export function AiAnalysisPanel() {
           <div className="space-y-4">
             <section>
               <p className="font-display text-[10px] tracking-[0.18em] text-city-mint uppercase">
-                摘要
+                {copy.ai.summary}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-city-snow">
                 {stream.summary}
@@ -93,7 +96,7 @@ export function AiAnalysisPanel() {
             {stream.risks.length > 0 ? (
               <section>
                 <p className="font-display text-[10px] tracking-[0.18em] text-city-amber uppercase">
-                  风险研判
+                  {copy.ai.risks}
                 </p>
                 <ul className="mt-2 space-y-1.5">
                   {stream.risks.map((item, index) => (
@@ -112,7 +115,7 @@ export function AiAnalysisPanel() {
             {stream.actions.length > 0 ? (
               <section>
                 <p className="font-display text-[10px] tracking-[0.18em] text-city-mint uppercase">
-                  处置建议
+                  {copy.ai.actions}
                 </p>
                 <ol className="mt-2 list-decimal space-y-1.5 pl-4 text-xs leading-relaxed text-city-fog">
                   {stream.actions.map((item, index) => (
@@ -128,7 +131,7 @@ export function AiAnalysisPanel() {
       {result && (status === 'streaming' || status === 'ready') ? (
         <div className="mt-3 flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-city-fog/15 pt-3 text-[10px] text-city-fog">
           <span>
-            {result.model} · 置信度 {confidenceLabel(result.confidence)}
+            {result.model} · {copy.ai.confidence(confidencePct(result.confidence))}
           </span>
           <button
             type="button"
@@ -138,7 +141,7 @@ export function AiAnalysisPanel() {
             }}
             className="text-city-mint transition hover:text-city-snow disabled:opacity-40"
           >
-            重新分析
+            {copy.ai.reanalyze}
           </button>
         </div>
       ) : null}

@@ -61,7 +61,7 @@ function buildMockOverview(): DashboardOverview {
     ],
     trafficTrend: buildTrend([48, 62, 71, 66, 78, 84, 69]),
     energyTrend: buildTrend([52, 58, 74, 70, 81, 88, 76]),
-    updatedAt: new Date().toLocaleTimeString('zh-CN', { hour12: false }),
+    updatedAt: Date.now(),
   }
 }
 
