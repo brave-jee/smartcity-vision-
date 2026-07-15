@@ -2,14 +2,18 @@ import { Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
 import { useAuthStore } from '@/features/auth/stores/useAuthStore'
 
+/**
+ * 需登录才能访问的布局：
+ * 顶部操作栏 + 内容区（首页大屏等）。
+ */
 export function ProtectedLayout() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
 
   return (
     <RequireAuth>
-      <div className="flex min-h-[100dvh] min-h-full flex-col">
-        <header className="flex items-center justify-between gap-3 border-b border-city-fog/15 px-4 py-3 safe-top sm:px-6 sm:py-4">
+      <div className="flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-city-fog/15 px-4 py-3 safe-top sm:px-6 sm:py-3">
           <div className="min-w-0 flex-1">
             <p className="font-display truncate text-sm tracking-wide text-city-mint">
               SmartCity Vision
@@ -28,7 +32,8 @@ export function ProtectedLayout() {
             退出登录
           </button>
         </header>
-        <div className="flex-1 safe-bottom">
+        {/* min-h-0 确保子级大屏网格可以内部滚动，而不是撑破视口 */}
+        <div className="min-h-0 flex-1 overflow-hidden safe-bottom">
           <Outlet />
         </div>
       </div>
@@ -36,6 +41,7 @@ export function ProtectedLayout() {
   )
 }
 
+/** 根路径按登录态分流到大屏或登录页 */
 export function AuthRedirect() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return <Navigate to={isAuthenticated ? '/app' : '/login'} replace />
