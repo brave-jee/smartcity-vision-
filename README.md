@@ -2,12 +2,12 @@
 
 智慧城市数字孪生平台前端工程。
 
-## 技术栈（模块 0）
+## 技术栈
 
 - React 18 + TypeScript + Vite
 - Tailwind CSS v4
 - React Router
-- Zustand
+- Zustand（含 persist）
 - ESLint + Prettier
 
 后续模块按需接入：React Three Fiber、ECharts、WebSocket、MSW 等。
@@ -21,6 +21,13 @@ npm run dev
 ```
 
 浏览器打开 `http://localhost:5173`。
+
+### 演示账号（模块 1）
+
+- 账号：`admin`
+- 密码：`admin123`
+
+未登录访问 `/app` 会跳转登录页；登录后 token 保存在 `localStorage`。
 
 ## 常用脚本
 
@@ -37,7 +44,7 @@ npm run dev
 ```
 src/
 ├── app/           # 应用入口、路由、布局
-├── features/      # 业务模块（按迭代增量添加）
+├── features/      # 业务模块（auth 等）
 ├── shared/        # 通用组件、stores、hooks、api、utils
 └── assets/        # 静态资源
 ```
@@ -47,7 +54,7 @@ src/
 | 模块 | 内容                | 状态   |
 | ---- | ------------------- | ------ |
 | 0    | 工程脚手架          | ✅     |
-| 1    | 登录（JWT）         | 待开发 |
+| 1    | 登录（JWT）         | ✅     |
 | 2    | 首页数据大屏        | 待开发 |
 | 3    | 3D 城市场景         | 待开发 |
 | 4    | 建筑物点击交互      | 待开发 |
@@ -61,5 +68,3 @@ src/
 | 12   | 系统设置            | 待开发 |
 
 每完成一个模块，提交并推送到 GitHub 一次。
-
-当前为空白脚手架：仅验证工程可运行，业务模块尚未开始。

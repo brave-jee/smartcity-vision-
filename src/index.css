@@ -2,7 +2,7 @@
 
 @theme {
   --font-display: 'Orbitron', sans-serif;
-  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-sans: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   --color-city-ink: #071018;
   --color-city-navy: #0a1628;
@@ -16,10 +16,23 @@
 }
 
 @layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
   html,
   body,
   #root {
-    height: 100%;
+    min-height: 100%;
+    min-height: 100dvh;
   }
 
   body {
@@ -28,9 +41,59 @@
     color: var(--color-city-snow);
     background: var(--color-city-ink);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: none;
   }
 
-  * {
-    box-sizing: border-box;
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Prevent iOS Safari auto-zoom on focus */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-city-mint);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .app-shell {
+    min-height: 100%;
+    min-height: 100dvh;
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top, 0px));
   }
 }
