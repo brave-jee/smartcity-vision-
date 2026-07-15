@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useAiAnalysis } from '@/features/ai-events/hooks/useAiAnalysis'
 import { useAlertStore } from '@/features/alerts/stores/useAlertStore'
 import {
   alertLevelDotClass,
@@ -12,6 +13,8 @@ import {
 export function LiveAlertList() {
   const alerts = useAlertStore((s) => s.alerts)
   const acknowledgeAlert = useAlertStore((s) => s.acknowledgeAlert)
+  const { analyzeAlert, alert: activeAlert, status: aiStatus } = useAiAnalysis()
+  const activeAlertId = activeAlert?.id ?? null
   const [now, setNow] = useState(() => Date.now())
 
   // 让「刚刚 / N 秒前」随时间刷新
@@ -61,19 +64,37 @@ export function LiveAlertList() {
                 <p className="text-xs text-city-fog/80">
                   {formatAlertRelativeTime(alert.createdAt, now)}
                 </p>
-                {alert.acknowledged ? (
-                  <span className="text-[10px] text-city-fog">已确认</span>
-                ) : (
+                <div className="flex shrink-0 items-center gap-2">
                   <button
                     type="button"
                     onClick={() => {
-                      acknowledgeAlert(alert.id)
+                      void analyzeAlert(alert)
                     }}
-                    className="text-[10px] text-city-mint transition hover:text-city-snow"
+                    className={`text-[10px] transition ${
+                      activeAlertId === alert.id && aiStatus !== 'idle'
+                        ? 'text-city-snow'
+                        : 'text-city-mint hover:text-city-snow'
+                    }`}
                   >
-                    确认
+                    {activeAlertId === alert.id &&
+                    (aiStatus === 'loading' || aiStatus === 'streaming')
+                      ? '分析中…'
+                      : 'AI 分析'}
                   </button>
-                )}
+                  {alert.acknowledged ? (
+                    <span className="text-[10px] text-city-fog">已确认</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        acknowledgeAlert(alert.id)
+                      }}
+                      className="text-[10px] text-city-mint transition hover:text-city-snow"
+                    >
+                      确认
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </li>

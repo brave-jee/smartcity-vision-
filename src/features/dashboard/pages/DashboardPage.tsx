@@ -86,9 +86,10 @@ export function DashboardPage() {
         </section>
 
         <aside className="order-3 flex h-full min-h-0 flex-col overflow-y-auto border border-city-fog/15 bg-city-panel/30 p-4">
-          <p className="mb-4 shrink-0 font-display text-[10px] tracking-[0.22em] text-city-mint uppercase">
+          <p className="mb-1 shrink-0 font-display text-[10px] tracking-[0.22em] text-city-mint uppercase">
             Live Alerts
           </p>
+          <p className="mb-3 shrink-0 text-[10px] text-city-fog">点「AI 分析」查看模拟研判</p>
           <div className="min-h-0 flex-1">
             <LiveAlertList />
           </div>

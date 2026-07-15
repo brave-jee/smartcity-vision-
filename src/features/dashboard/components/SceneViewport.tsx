@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { AiAnalysisPanel } from '@/features/ai-events/components/AiAnalysisPanel'
 import { BuildingDetailPanel } from '@/features/scene3d/components/BuildingDetailPanel'
 import { WeatherControlPanel } from '@/features/weather/components/WeatherControlPanel'
 
@@ -9,7 +10,7 @@ const CityCanvas = lazy(async () => {
 })
 
 /**
- * 大屏中央视口：三维场景 + 建筑详情 + 天气昼夜控制。
+ * 大屏中央视口：三维场景 + 建筑详情 + AI 分析 + 天气昼夜控制。
  */
 export function SceneViewport() {
   return (
@@ -39,6 +40,7 @@ export function SceneViewport() {
       </div>
 
       <WeatherControlPanel />
+      <AiAnalysisPanel />
       <BuildingDetailPanel />
     </div>
   )
