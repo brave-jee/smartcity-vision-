@@ -1,7 +1,10 @@
+import { useAtmosphere } from '@/features/weather/hooks/useAtmosphere'
+
 /**
- * 主干道路灯：多数仅用自发光球，少量点光，兼顾观感与性能。
+ * 主干道路灯：夜间与降雨时增强自发光与点光。
  */
 export function StreetLights() {
+  const { streetGlow } = useAtmosphere()
   const lamps: Array<{ x: number; z: number; lit: boolean }> = []
 
   for (let i = -6; i <= 6; i += 2) {
@@ -9,6 +12,9 @@ export function StreetLights() {
     lamps.push({ x: i * 3.6, z: 1.35, lit: Math.abs(i) % 4 === 0 })
     lamps.push({ x: 1.35, z: i * 3.6, lit: Math.abs(i) % 4 === 2 })
   }
+
+  const emissive = 0.35 + streetGlow * 2.2
+  const pointIntensity = streetGlow * 0.85
 
   return (
     <group>
@@ -23,13 +29,13 @@ export function StreetLights() {
             <meshStandardMaterial
               color="#f0d29a"
               emissive="#f0d29a"
-              emissiveIntensity={lit ? 2.4 : 1.4}
+              emissiveIntensity={lit ? emissive : emissive * 0.55}
             />
           </mesh>
-          {lit ? (
+          {lit && pointIntensity > 0.08 ? (
             <pointLight
               position={[0, 2.2, 0]}
-              intensity={0.7}
+              intensity={pointIntensity}
               distance={7}
               decay={2}
               color="#f2d7a2"

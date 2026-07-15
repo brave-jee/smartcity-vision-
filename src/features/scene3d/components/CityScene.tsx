@@ -5,26 +5,47 @@ import { GltfRoads } from '@/features/scene3d/components/GltfRoads'
 import { Ground } from '@/features/scene3d/components/Ground'
 import { SceneLights } from '@/features/scene3d/components/SceneLights'
 import { StreetLights } from '@/features/scene3d/components/StreetLights'
+import { RainParticles } from '@/features/weather/components/RainParticles'
+import { useAtmosphere } from '@/features/weather/hooks/useAtmosphere'
 
 /**
- * 城市场景：GLTF 建筑可点击选中，并联动相机聚焦。
+ * 城市场景：建筑交互 + 天气昼夜气氛。
  */
 export function CityScene() {
+  const atmosphere = useAtmosphere()
+
   return (
     <>
-      <color attach="background" args={['#050b14']} />
-      <fog attach="fog" args={['#050b14', 30, 95]} />
+      <color attach="background" args={[atmosphere.background]} />
+      <fog
+        attach="fog"
+        color={atmosphere.fogColor}
+        near={atmosphere.fogNear}
+        far={atmosphere.fogFar}
+      />
 
-      <Stars radius={90} depth={42} count={1400} factor={3.2} saturation={0} fade speed={0.35} />
+      {atmosphere.starsVisible ? (
+        <Stars
+          radius={90}
+          depth={42}
+          count={1400}
+          factor={atmosphere.starsFactor}
+          saturation={0}
+          fade
+          speed={0.35}
+        />
+      ) : null}
+
       <SceneLights />
       <Ground />
       <GltfRoads />
       <GltfCityBuildings />
       <StreetLights />
+      <RainParticles />
 
       <ContactShadows
         position={[0, 0.02, 0]}
-        opacity={0.4}
+        opacity={atmosphere.contactShadowOpacity}
         scale={70}
         blur={2.4}
         far={20}
