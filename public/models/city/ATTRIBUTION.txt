@@ -1,0 +1,6 @@
+KayKit City Builder Bits
+License: CC0 1.0 Universal
+Source: https://github.com/KayKit-Game-Assets/KayKit-City-Builder-Bits-1.0
+Author: Kay Lousberg / KayKit
+
+用于 SmartCity Vision 三维城市场景的建筑 GLTF / 贴图资源。
