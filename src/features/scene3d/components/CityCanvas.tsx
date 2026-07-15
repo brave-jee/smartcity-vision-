@@ -12,7 +12,8 @@ export function CityCanvas() {
 
   return (
     <Canvas
-      className="h-full w-full touch-none"
+      className="!h-full !w-full touch-none"
+      style={{ width: '100%', height: '100%' }}
       shadows
       dpr={[1, 1.5]}
       camera={{ position: [28, 20, 30], fov: 40, near: 0.1, far: 200 }}

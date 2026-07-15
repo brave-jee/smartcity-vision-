@@ -4,7 +4,7 @@ import { useWeatherStore } from '@/features/weather/stores/useWeatherStore'
 import { formatSimClock, getDayPhase, getDayPhaseLabel } from '@/features/weather/utils/atmosphere'
 
 /**
- * 视口内天气 / 昼夜控制：时段滑杆、天气切换、自动流逝。
+ * 视口内天气 / 昼夜控制：紧凑面板，避免被 overflow 裁切。
  */
 export function WeatherControlPanel() {
   useWeatherClock()
@@ -19,18 +19,18 @@ export function WeatherControlPanel() {
   const phaseLabel = getDayPhaseLabel(getDayPhase(hour))
 
   return (
-    <div className="pointer-events-auto absolute bottom-3 left-3 z-20 w-[min(100%-1.5rem,17.5rem)] border border-city-fog/20 bg-city-ink/80 p-3 backdrop-blur-sm">
+    <div className="pointer-events-auto absolute bottom-3 left-3 z-20 w-[min(calc(100%-1.5rem),16.5rem)] border border-city-fog/25 bg-city-ink/90 p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md">
       <div className="flex items-center justify-between gap-2">
-        <p className="font-display text-[10px] tracking-[0.18em] text-city-mint uppercase">
-          Weather / Time
+        <p className="font-display text-[10px] tracking-[0.16em] text-city-mint uppercase">
+          Weather
         </p>
-        <p className="text-[10px] text-city-fog">
+        <p className="text-[10px] whitespace-nowrap text-city-fog">
           {formatSimClock(hour)} · {phaseLabel}
         </p>
       </div>
 
-      <label className="mt-3 block">
-        <span className="sr-only">仿真时刻</span>
+      <label className="mt-2 block">
+        <span className="mb-1 block text-[10px] text-city-fog/80">仿真时刻</span>
         <input
           type="range"
           min={0}
@@ -40,11 +40,11 @@ export function WeatherControlPanel() {
           onChange={(event) => {
             setHour(Number(event.target.value))
           }}
-          className="w-full accent-city-mint"
+          className="weather-range w-full"
         />
       </label>
 
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="mt-2 grid grid-cols-4 gap-1">
         {WEATHER_OPTIONS.map((option) => {
           const active = weather === option.id
           return (
@@ -54,9 +54,9 @@ export function WeatherControlPanel() {
               onClick={() => {
                 setWeather(option.id)
               }}
-              className={`px-2 py-1 text-[10px] transition ${
+              className={`px-1 py-1 text-center text-[10px] transition ${
                 active
-                  ? 'border border-city-mint/60 bg-city-mint/15 text-city-mint'
+                  ? 'border border-city-mint/70 bg-city-mint/15 text-city-mint'
                   : 'border border-city-fog/25 text-city-fog hover:border-city-fog/50 hover:text-city-snow'
               }`}
             >
@@ -71,7 +71,7 @@ export function WeatherControlPanel() {
         onClick={toggleAutoPlay}
         className={`mt-2 w-full border px-2 py-1.5 text-[10px] transition ${
           autoPlay
-            ? 'border-city-mint/50 text-city-mint'
+            ? 'border-city-mint/50 bg-city-mint/10 text-city-mint'
             : 'border-city-fog/30 text-city-fog hover:border-city-mint/40 hover:text-city-mint'
         }`}
       >

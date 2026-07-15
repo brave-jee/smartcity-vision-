@@ -232,3 +232,31 @@
     animation: none !important;
   }
 }
+
+/* 天气面板滑杆：避免原生控件在深色底上看不清 */
+.weather-range {
+  height: 0.35rem;
+  appearance: none;
+  border-radius: 999px;
+  background: rgba(139, 163, 184, 0.25);
+  outline: none;
+}
+
+.weather-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: #5ec4b6;
+  border: 2px solid #e8f0f5;
+  cursor: pointer;
+}
+
+.weather-range::-moz-range-thumb {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: #5ec4b6;
+  border: 2px solid #e8f0f5;
+  cursor: pointer;
+}

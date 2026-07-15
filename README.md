@@ -10,8 +10,8 @@
 - Zustand（含 persist）
 - ESLint + Prettier
 
-已接入：React Three Fiber + Three.js + GLTF 城市模型（KayKit CC0）、Mock WebSocket 实时告警、天气昼夜、车辆巡航、飞线粒子。  
-后续按需接入：ECharts、真实 WebSocket、MSW 等。
+已接入：React Three Fiber + Three.js + GLTF 城市模型（KayKit CC0）、Mock WebSocket 实时告警、天气昼夜、车辆巡航、飞线粒子、ECharts 统计图表。  
+后续按需接入：真实 WebSocket、MSW 等。
 
 ## 快速开始
 
@@ -63,7 +63,7 @@ src/
 | 6    | 天气昼夜系统        | ✅     |
 | 7    | 车辆巡航动画        | ✅     |
 | 8    | 飞线与粒子特效      | ✅     |
-| 9    | 数据统计图表        | 待开发 |
+| 9    | 数据统计图表        | ✅     |
 | 10   | AI 事件分析（模拟） | 待开发 |
 | 11   | 操作日志            | 待开发 |
 | 12   | 系统设置            | 待开发 |

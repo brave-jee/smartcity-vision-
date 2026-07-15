@@ -13,7 +13,7 @@ const CityCanvas = lazy(async () => {
  */
 export function SceneViewport() {
   return (
-    <div className="relative h-full min-h-[220px] w-full overflow-hidden border border-city-fog/15 bg-city-ink lg:min-h-0">
+    <div className="relative h-full w-full overflow-hidden border border-city-fog/15 bg-city-ink">
       <Suspense
         fallback={
           <div className="flex h-full items-center justify-center text-sm text-city-fog">
@@ -21,7 +21,9 @@ export function SceneViewport() {
           </div>
         }
       >
-        <CityCanvas />
+        <div className="absolute inset-0">
+          <CityCanvas />
+        </div>
       </Suspense>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-3">
