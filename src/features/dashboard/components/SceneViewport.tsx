@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { BuildingDetailPanel } from '@/features/scene3d/components/BuildingDetailPanel'
 
 /** 按需加载 Three 相关包，避免首屏登录页也打进大体量 3D 依赖 */
 const CityCanvas = lazy(async () => {
@@ -7,8 +8,7 @@ const CityCanvas = lazy(async () => {
 })
 
 /**
- * 大屏中央视口：挂载 React Three Fiber 城市场景。
- * 操作提示浮在画布之上，不阻断 3D 交互区域主体。
+ * 大屏中央视口：三维场景 + 建筑详情浮层。
  */
 export function SceneViewport() {
   return (
@@ -28,12 +28,14 @@ export function SceneViewport() {
           <p className="font-display text-[10px] tracking-[0.22em] text-city-mint uppercase sm:text-xs">
             3D City Scene
           </p>
-          <p className="mt-1 text-xs text-city-fog">GLTF 城市模型已接入</p>
+          <p className="mt-1 text-xs text-city-fog">点击建筑查看详情，再点取消</p>
         </div>
-        <p className="max-w-[9.5rem] text-right text-[10px] leading-relaxed text-city-fog/80 sm:max-w-none sm:text-xs">
-          拖拽旋转 · 滚轮缩放
+        <p className="max-w-[10rem] text-right text-[10px] leading-relaxed text-city-fog/80 sm:max-w-none sm:text-xs">
+          拖拽旋转 · 滚轮缩放 · 再点取消
         </p>
       </div>
+
+      <BuildingDetailPanel />
     </div>
   )
 }

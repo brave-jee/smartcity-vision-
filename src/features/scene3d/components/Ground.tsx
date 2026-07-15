@@ -1,11 +1,20 @@
 import { MeshReflectorMaterial } from '@react-three/drei'
+import { useSceneStore } from '@/features/scene3d/stores/useSceneStore'
 
 /**
  * 地面、道路与人行区域：带弱反射的夜景路基。
+ * 点击地面可取消建筑选中。
  */
 export function Ground() {
+  const clearSelection = useSceneStore((s) => s.clearSelection)
+
   return (
-    <group>
+    <group
+      onClick={(event) => {
+        event.stopPropagation()
+        clearSelection()
+      }}
+    >
       {/* 反射地面 */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[56, 56]} />

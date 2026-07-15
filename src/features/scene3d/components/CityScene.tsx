@@ -1,4 +1,5 @@
 import { ContactShadows, OrbitControls, Stars } from '@react-three/drei'
+import { CameraFocus } from '@/features/scene3d/components/CameraFocus'
 import { GltfCityBuildings } from '@/features/scene3d/components/GltfCityBuildings'
 import { GltfRoads } from '@/features/scene3d/components/GltfRoads'
 import { Ground } from '@/features/scene3d/components/Ground'
@@ -6,7 +7,7 @@ import { SceneLights } from '@/features/scene3d/components/SceneLights'
 import { StreetLights } from '@/features/scene3d/components/StreetLights'
 
 /**
- * 城市场景：KayKit GLTF 建筑/路口 + 夜景灯光/地面反射。
+ * 城市场景：GLTF 建筑可点击选中，并联动相机聚焦。
  */
 export function CityScene() {
   return (
@@ -31,13 +32,15 @@ export function CityScene() {
       />
 
       <OrbitControls
+        makeDefault
         enableDamping
         dampingFactor={0.08}
-        minDistance={14}
+        minDistance={8}
         maxDistance={70}
         maxPolarAngle={Math.PI / 2.18}
         target={[0, 2.5, 0]}
       />
+      <CameraFocus />
     </>
   )
 }

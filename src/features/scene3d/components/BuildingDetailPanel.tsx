@@ -1,0 +1,74 @@
+import type { BuildingDetail, BuildingStatus } from '@/features/scene3d/types/buildingDetail'
+import { useSceneStore } from '@/features/scene3d/stores/useSceneStore'
+
+function statusLabel(status: BuildingStatus) {
+  if (status === 'critical') return '危急'
+  if (status === 'warning') return '预警'
+  return '正常'
+}
+
+function statusClass(status: BuildingStatus) {
+  if (status === 'critical') return 'text-city-crimson'
+  if (status === 'warning') return 'text-city-amber'
+  return 'text-city-mint'
+}
+
+type DetailBodyProps = {
+  detail: BuildingDetail
+}
+
+function DetailBody({ detail }: DetailBodyProps) {
+  return (
+    <>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <h2 className="font-display text-base tracking-wide text-city-snow">{detail.name}</h2>
+        <span className={`text-xs ${statusClass(detail.status)}`}>
+          {statusLabel(detail.status)}
+        </span>
+      </div>
+      <p className="mt-1 text-xs text-city-fog">
+        {detail.district} · {detail.floors} 层
+      </p>
+      <p className="mt-3 text-sm leading-relaxed text-city-fog">{detail.summary}</p>
+
+      <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <dt className="text-xs text-city-fog">实时能耗</dt>
+          <dd className="mt-1 font-display text-city-snow">{detail.energyMw} MW</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-city-fog">入住率</dt>
+          <dd className="mt-1 font-display text-city-snow">{detail.occupancy}%</dd>
+        </div>
+      </dl>
+    </>
+  )
+}
+
+/**
+ * 建筑详情浮层：选中后显示在视口右下侧。
+ */
+export function BuildingDetailPanel() {
+  const selectedBuilding = useSceneStore((s) => s.selectedBuilding)
+  const clearSelection = useSceneStore((s) => s.clearSelection)
+
+  if (!selectedBuilding) return null
+
+  return (
+    <aside className="pointer-events-auto absolute bottom-3 right-3 z-20 w-[min(100%-1.5rem,18rem)] border border-city-fog/25 bg-city-panel/95 p-4 backdrop-blur-sm">
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-display text-[10px] tracking-[0.2em] text-city-mint uppercase">
+          Building Detail
+        </p>
+        <button
+          type="button"
+          onClick={clearSelection}
+          className="text-xs text-city-fog transition hover:text-city-mint"
+        >
+          关闭
+        </button>
+      </div>
+      <DetailBody detail={selectedBuilding} />
+    </aside>
+  )
+}
