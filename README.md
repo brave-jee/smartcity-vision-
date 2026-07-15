@@ -10,8 +10,8 @@
 - Zustand（含 persist）
 - ESLint + Prettier
 
-已接入：React Three Fiber + Three.js + GLTF 城市模型（KayKit CC0）。  
-后续按需接入：ECharts、WebSocket、MSW 等。
+已接入：React Three Fiber + Three.js + GLTF 城市模型（KayKit CC0）、Mock WebSocket 实时告警。  
+后续按需接入：ECharts、真实 WebSocket、MSW 等。
 
 ## 快速开始
 
@@ -59,7 +59,7 @@ src/
 | 2    | 首页数据大屏        | ✅     |
 | 3    | 3D 城市场景         | ✅     |
 | 4    | 建筑物点击交互      | ✅     |
-| 5    | WebSocket 实时告警  | 待开发 |
+| 5    | WebSocket 实时告警  | ✅     |
 | 6    | 天气昼夜系统        | 待开发 |
 | 7    | 车辆巡航动画        | 待开发 |
 | 8    | 飞线与粒子特效      | 待开发 |

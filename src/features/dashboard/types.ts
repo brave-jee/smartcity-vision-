@@ -19,24 +19,15 @@ export type DashboardMetric = {
   trend: 'up' | 'down' | 'flat'
 }
 
-/** 右侧告警预览项（完整实时告警在后续 WebSocket 模块） */
-export type DashboardAlertPreview = {
-  id: string
-  level: 'info' | 'warning' | 'critical'
-  title: string
-  time: string
-}
-
 /** 简易趋势点（本模块用 CSS/SVG 展示，ECharts 留给统计图表模块） */
 export type TrendPoint = {
   label: string
   value: number
 }
 
-/** 大屏总览数据 */
+/** 大屏总览数据（告警流由 features/alerts 独立维护） */
 export type DashboardOverview = {
   metrics: DashboardMetric[]
-  alerts: DashboardAlertPreview[]
   trafficTrend: TrendPoint[]
   energyTrend: TrendPoint[]
   updatedAt: string

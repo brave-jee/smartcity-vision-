@@ -16,15 +16,12 @@ function buildTrend(base: number[]): TrendPoint[] {
 
 /**
  * 生成带轻微抖动的模拟总览数据。
- * 后续可替换为真实 HTTP 接口，组件侧无需大改。
+ * 告警列表改由 WebSocket 模块推送，此处只保留 KPI 占位。
  */
 function buildMockOverview(): DashboardOverview {
   const population = Math.round(jitterAround(12840, 180))
   const energy = jitterAround(86.5, 2.4)
   const traffic = Math.min(99, Math.max(40, Math.round(jitterAround(72, 8))))
-  const alarms = Math.max(0, Math.round(jitterAround(6.5, 3)))
-
-  const secondsBag = Math.floor(Math.random() * 15)
 
   return {
     metrics: [
@@ -56,29 +53,10 @@ function buildMockOverview(): DashboardOverview {
       {
         id: 'alarms',
         label: '待处置告警',
-        numericValue: alarms,
-        delta: alarms > 6 ? `+${alarms - 6}` : '0',
-        trend: alarms > 6 ? 'up' : 'flat',
-      },
-    ],
-    alerts: [
-      {
-        id: 'a1',
-        level: 'critical',
-        title: '东城变电站功率超限',
-        time: secondsBag < 3 ? '刚刚' : `${secondsBag} 秒前`,
-      },
-      {
-        id: 'a2',
-        level: 'warning',
-        title: '滨河路车流拥堵加剧',
-        time: `${20 + secondsBag} 秒前`,
-      },
-      {
-        id: 'a3',
-        level: 'info',
-        title: '南区环境监测正常',
-        time: `${60 + secondsBag} 秒前`,
+        // 展示值由实时告警 store 覆盖
+        numericValue: 0,
+        delta: '实时',
+        trend: 'flat',
       },
     ],
     trafficTrend: buildTrend([48, 62, 71, 66, 78, 84, 69]),
