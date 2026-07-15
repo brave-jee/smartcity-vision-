@@ -41,9 +41,7 @@ export function AlertLevelPieChart() {
           center: ['50%', '42%'],
           label: { show: false },
           data:
-            total === 0
-              ? [{ name: '等待推送', value: 1, itemStyle: { color: '#2a3a4c' } }]
-              : data,
+            total === 0 ? [{ name: '等待推送', value: 1, itemStyle: { color: '#2a3a4c' } }] : data,
         },
       ],
     }

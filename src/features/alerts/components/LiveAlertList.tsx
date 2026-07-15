@@ -6,6 +6,8 @@ import {
   alertLevelLabel,
   formatAlertRelativeTime,
 } from '@/features/alerts/utils/formatAlert'
+import { useAuthStore } from '@/features/auth/stores/useAuthStore'
+import { appendOpLog } from '@/features/logs/utils/appendOpLog'
 
 /**
  * 实时告警列表：由 Mock WebSocket 推送驱动。
@@ -13,6 +15,7 @@ import {
 export function LiveAlertList() {
   const alerts = useAlertStore((s) => s.alerts)
   const acknowledgeAlert = useAlertStore((s) => s.acknowledgeAlert)
+  const actor = useAuthStore((s) => s.user?.displayName ?? s.user?.username ?? '城市指挥员')
   const { analyzeAlert, alert: activeAlert, status: aiStatus } = useAiAnalysis()
   const activeAlertId = activeAlert?.id ?? null
   const [now, setNow] = useState(() => Date.now())
@@ -88,6 +91,14 @@ export function LiveAlertList() {
                       type="button"
                       onClick={() => {
                         acknowledgeAlert(alert.id)
+                        appendOpLog({
+                          actor,
+                          action: 'acknowledge',
+                          title: '确认告警',
+                          category: 'alert',
+                          target: alert.title,
+                          detail: `片区：${alert.district}`,
+                        })
                       }}
                       className="text-[10px] text-city-mint transition hover:text-city-snow"
                     >

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { DEMO_ACCOUNT } from '@/features/auth/constants'
 import { useAuthStore } from '@/features/auth/stores/useAuthStore'
+import { appendOpLog } from '@/features/logs/utils/appendOpLog'
 
 const fieldClassName =
   'w-full min-h-11 rounded-none border border-city-fog/25 bg-city-panel/70 px-3 py-3 text-base text-city-snow outline-none transition placeholder:text-city-fog/50 focus:border-city-mint sm:px-4'
@@ -29,6 +30,17 @@ export function LoginPage() {
 
     try {
       await login({ username, password })
+      const displayName =
+        useAuthStore.getState().user?.displayName ??
+        useAuthStore.getState().user?.username ??
+        username.trim()
+      appendOpLog({
+        actor: displayName,
+        action: 'login',
+        title: '登录平台',
+        category: 'auth',
+        detail: `账号 ${username.trim()}`,
+      })
       navigate(from, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败，请重试')

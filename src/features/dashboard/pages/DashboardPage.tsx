@@ -3,10 +3,12 @@ import { AlertStreamBadge } from '@/features/alerts/components/AlertStreamBadge'
 import { LiveAlertList } from '@/features/alerts/components/LiveAlertList'
 import { useAlertStream } from '@/features/alerts/hooks/useAlertStream'
 import { useAlertStore } from '@/features/alerts/stores/useAlertStore'
+import { useAuthStore } from '@/features/auth/stores/useAuthStore'
 import { ChartsAnalyticsPanel } from '@/features/charts/components/ChartsAnalyticsPanel'
 import { MetricList } from '@/features/dashboard/components/MetricList'
 import { SceneViewport } from '@/features/dashboard/components/SceneViewport'
 import { useDashboardOverview } from '@/features/dashboard/hooks/useDashboardOverview'
+import { appendOpLog } from '@/features/logs/utils/appendOpLog'
 
 /**
  * 首页数据大屏：
@@ -17,6 +19,7 @@ export function DashboardPage() {
   const { data, loading, error, reload } = useDashboardOverview()
   const { reconnect } = useAlertStream()
   const pendingAlerts = useAlertStore((s) => s.alerts.filter((item) => !item.acknowledged).length)
+  const actor = useAuthStore((s) => s.user?.displayName ?? s.user?.username ?? '城市指挥员')
 
   const metrics = useMemo(() => {
     if (!data) return null
@@ -50,7 +53,15 @@ export function DashboardPage() {
           <AlertStreamBadge onReconnect={reconnect} />
           <button
             type="button"
-            onClick={reload}
+            onClick={() => {
+              appendOpLog({
+                actor,
+                action: 'refresh_metrics',
+                title: '刷新大屏指标',
+                category: 'system',
+              })
+              reload()
+            }}
             className="border border-city-fog/30 px-3 py-1.5 text-xs text-city-fog transition hover:border-city-mint hover:text-city-mint active:border-city-mint active:text-city-mint"
           >
             刷新指标

@@ -1,8 +1,5 @@
 import { useAiAnalysis } from '@/features/ai-events/hooks/useAiAnalysis'
-import {
-  alertLevelDotClass,
-  alertLevelLabel,
-} from '@/features/alerts/utils/formatAlert'
+import { alertLevelDotClass, alertLevelLabel } from '@/features/alerts/utils/formatAlert'
 
 function confidenceLabel(value: number) {
   return `${Math.round(value * 100)}%`

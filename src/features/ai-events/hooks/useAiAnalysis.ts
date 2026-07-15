@@ -2,6 +2,8 @@ import { analyzeAlertApi } from '@/features/ai-events/api/analyzeAlertApi'
 import { useAiEventStore } from '@/features/ai-events/stores/useAiEventStore'
 import { playAnalysisStream } from '@/features/ai-events/utils/playAnalysisStream'
 import type { CityAlert } from '@/features/alerts/types'
+import { useAuthStore } from '@/features/auth/stores/useAuthStore'
+import { appendOpLog } from '@/features/logs/utils/appendOpLog'
 
 /** 多处组件共用 hook 时，共用同一取消令牌 */
 let activeAbort: AbortController | null = null
@@ -36,6 +38,19 @@ export function useAiAnalysis() {
     abortActiveRequest()
     const controller = new AbortController()
     activeAbort = controller
+
+    const actor =
+      useAuthStore.getState().user?.displayName ??
+      useAuthStore.getState().user?.username ??
+      '城市指挥员'
+    appendOpLog({
+      actor,
+      action: 'ai_analyze',
+      title: '发起 AI 事件分析',
+      category: 'ai',
+      target: target.title,
+      detail: `片区：${target.district}`,
+    })
 
     const runId = beginAnalysis(target)
 

@@ -1,6 +1,12 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { NavLink, Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
 import { useAuthStore } from '@/features/auth/stores/useAuthStore'
+import { appendOpLog } from '@/features/logs/utils/appendOpLog'
+
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  `px-2 py-1 text-xs transition sm:text-sm ${
+    isActive ? 'text-city-mint' : 'text-city-fog hover:text-city-mint'
+  }`
 
 /**
  * 需登录才能访问的布局：
@@ -9,6 +15,16 @@ import { useAuthStore } from '@/features/auth/stores/useAuthStore'
 export function ProtectedLayout() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
+
+  function handleLogout() {
+    appendOpLog({
+      actor: user?.displayName ?? user?.username ?? '未知用户',
+      action: 'logout',
+      title: '退出登录',
+      category: 'auth',
+    })
+    logout()
+  }
 
   return (
     <RequireAuth>
@@ -22,11 +38,19 @@ export function ProtectedLayout() {
               已登录 · {user?.displayName ?? user?.username}
             </p>
           </div>
+
+          <nav className="flex shrink-0 items-center gap-1 sm:gap-3" aria-label="主导航">
+            <NavLink to="/app" end className={navClass}>
+              态势总览
+            </NavLink>
+            <NavLink to="/app/logs" className={navClass}>
+              操作日志
+            </NavLink>
+          </nav>
+
           <button
             type="button"
-            onClick={() => {
-              logout()
-            }}
+            onClick={handleLogout}
             className="shrink-0 border border-city-fog/30 px-3 py-2 text-sm text-city-fog transition hover:border-city-mint hover:text-city-mint active:border-city-mint active:text-city-mint sm:px-4"
           >
             退出登录

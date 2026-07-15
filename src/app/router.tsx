@@ -4,8 +4,9 @@ import { GuestOnly } from '@/features/auth/components/GuestOnly'
 import { AuthRedirect, ProtectedLayout } from '@/features/auth/layouts/ProtectedLayout'
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
+import { OpLogsPage } from '@/features/logs/pages/OpLogsPage'
 
-/** 应用路由表：公开登录页 + 鉴权后大屏 */
+/** 应用路由表：公开登录页 + 鉴权后大屏 / 日志 */
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
             index: true,
             // 登录后默认进入首页数据大屏
             element: <DashboardPage />,
+          },
+          {
+            path: 'logs',
+            element: <OpLogsPage />,
           },
         ],
       },
