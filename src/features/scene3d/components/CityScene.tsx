@@ -1,4 +1,5 @@
 import { ContactShadows, OrbitControls, Stars } from '@react-three/drei'
+import { FlylineEffects } from '@/features/fx/components/FlylineEffects'
 import { CameraFocus } from '@/features/scene3d/components/CameraFocus'
 import { GltfCityBuildings } from '@/features/scene3d/components/GltfCityBuildings'
 import { GltfRoads } from '@/features/scene3d/components/GltfRoads'
@@ -10,7 +11,7 @@ import { RainParticles } from '@/features/weather/components/RainParticles'
 import { useAtmosphere } from '@/features/weather/hooks/useAtmosphere'
 
 /**
- * 城市场景：建筑交互 + 天气昼夜 + 主干道车辆巡航。
+ * 城市场景：建筑交互 + 天气昼夜 + 车辆巡航 + 飞线粒子。
  */
 export function CityScene() {
   const atmosphere = useAtmosphere()
@@ -43,6 +44,7 @@ export function CityScene() {
       <GltfCityBuildings />
       <StreetLights />
       <PatrolFleet />
+      <FlylineEffects />
       <RainParticles />
 
       <ContactShadows
