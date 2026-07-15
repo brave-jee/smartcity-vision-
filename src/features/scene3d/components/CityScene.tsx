@@ -5,11 +5,12 @@ import { GltfRoads } from '@/features/scene3d/components/GltfRoads'
 import { Ground } from '@/features/scene3d/components/Ground'
 import { SceneLights } from '@/features/scene3d/components/SceneLights'
 import { StreetLights } from '@/features/scene3d/components/StreetLights'
+import { PatrolFleet } from '@/features/vehicles/components/PatrolFleet'
 import { RainParticles } from '@/features/weather/components/RainParticles'
 import { useAtmosphere } from '@/features/weather/hooks/useAtmosphere'
 
 /**
- * 城市场景：建筑交互 + 天气昼夜气氛。
+ * 城市场景：建筑交互 + 天气昼夜 + 主干道车辆巡航。
  */
 export function CityScene() {
   const atmosphere = useAtmosphere()
@@ -41,6 +42,7 @@ export function CityScene() {
       <GltfRoads />
       <GltfCityBuildings />
       <StreetLights />
+      <PatrolFleet />
       <RainParticles />
 
       <ContactShadows

@@ -29,7 +29,7 @@ export function SceneViewport() {
           <p className="font-display text-[10px] tracking-[0.22em] text-city-mint uppercase sm:text-xs">
             3D City Scene
           </p>
-          <p className="mt-1 text-xs text-city-fog">点击建筑查看详情，再点取消</p>
+          <p className="mt-1 text-xs text-city-fog">点击建筑查看详情 · 主干道车辆巡航中</p>
         </div>
         <p className="max-w-[10rem] text-right text-[10px] leading-relaxed text-city-fog/80 sm:max-w-none sm:text-xs">
           拖拽旋转 · 滚轮缩放 · 再点取消
